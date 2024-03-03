@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Tracking</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="m-4">
+    <h1 class="text-2xl font-bold mb-4">Job Application Tracking</h1>
+
+    <div class="my-4">
+        <form id="jobApplicationForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+                <label for="date" class="block">Date d'envoi:</label>
+                <input type="date" id="date" name="date" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="company" class="block">Nom de l'entreprise:</label>
+                <input type="text" id="company" name="company" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="position" class="block">Dénomination du poste:</label>
+                <input type="text" id="position" name="position" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="contractType" class="block">Type de contrat:</label>
+                <input type="text" id="contractType" name="contractType" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="source" class="block">Source de l'offre:</label>
+                <input type="text" id="source" name="source" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="followUpDate" class="block">Date de relance:</label>
+                <input type="date" id="followUpDate" name="followUpDate" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="status" class="block">Statut:</label>
+                <input type="text" id="status" name="status" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="employerResponse" class="block">Réponse de l'employeur:</label>
+                <input type="text" id="employerResponse" name="employerResponse" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="responseMode" class="block">Mode de réponse:</label>
+                <input type="text" id="responseMode" name="responseMode" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="reasons" class="block">Motifs:</label>
+                <input type="text" id="reasons" name="reasons" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="interview" class="block">Entretien:</label>
+                <input type="text" id="interview" name="interview" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="profiles" class="block">Mes profils:</label>
+                <input type="text" id="profiles" name="profiles" required class="border p-1 w-full">
+            </div>
+            <div>
+                <label for="documentsSent" class="block">Documents envoyés:</label>
+                <input type="text" id="documentsSent" name="documentsSent" required class="border p-1 w-full">
+            </div>
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-4 col-span-full">Add Job Application</button>
+        </form>
+    </div>
+
+    <div class="my-4 overflow-x-auto">
+        <table class="block sm:table-fixed sm:w-full border-collapse">
+            <thead>
+                <tr>
+                    <th class="px-4 py-3 border block sm:table-cell">Date d'envoi</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Nom de l'entreprise</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Dénomination du poste</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Type de contrat</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Source de l'offre</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Date de relance</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Statut</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Réponse de l'employeur</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Mode de réponse</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Motifs</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Entretien</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Mes profils</th>
+                    <th class="px-4 py-3 border block sm:table-cell">Documents envoyés</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Job applications will be rendered here -->
+            </tbody>
+        </table>
+        <button type="button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-4 block sm:inline-block" id="exportButton">Exporter vers Excel</button>
+    </div>
+
+    <!-- Link to the external JavaScript files -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.5/dist/xlsx.full.min.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>

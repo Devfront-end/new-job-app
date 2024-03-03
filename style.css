@@ -1,0 +1,25 @@
+@media (max-width: 640px) {
+    .table-cell, .table-fixed {
+        display: block;
+        width: 100%;
+    }
+    .table-cell th, .table-cell td {
+        display: flex;
+        justify-content: space-between;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .table-cell th::before, .table-cell td::before {
+        content: attr(data-label);
+        flex: 1;
+        font-weight: bold;
+    }
+    .table-cell td::before {
+        font-weight: normal;
+        color: #6b7280;
+    }
+    .table-cell th, .table-cell td {
+        flex: 2;
+    }
+}
