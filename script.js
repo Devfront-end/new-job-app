@@ -1,52 +1,107 @@
+// Array to store job application entries
 const jobApplications = [];
 
+// Render job applications in the table
 function renderJobApplications() {
-    const tbody = document.querySelector('table tbody');
-    if (jobApplications.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="13" class="text-center py-3">No job applications to display.</td></tr>`;
-    } else {
-        tbody.innerHTML = jobApplications.map(app =>
-            `<tr class="hover:bg-gray-100">
-                <td class="px-4 py-3">${app.date}</td>
-                <td class="px-4 py-3">${app.company}</td>
-                <td class="px-4 py-3">${app.position}</td>
-                <td class="px-4 py-3">${app.contractType}</td>
-                <td class="px-4 py-3">${app.source}</td>
-                <td class="px-4 py-3">${app.followUpDate}</td>
-                <td class="px-4 py-3">${app.status}</td>
-                <td class="px-4 py-3">${app.employerResponse}</td>
-                <td class="px-4 py-3">${app.responseMode}</td>
-                <td class="px-4 py-3">${app.reasons}</td>
-                <td class="px-4 py-3">${app.interview}</td>
-                <td class="px-4 py-3">${app.profiles}</td>
-                <td class="px-4 py-3">${app.documentsSent}</td>
-            </tr>`
-        ).join('');
-    }
+  const tbody = document.querySelector('table tbody');
+  tbody.innerHTML = jobApplications.length === 0 ?
+    `<tr><td colspan="13" class="text-center">No job applications to display.</td></tr>` :
+    jobApplications.map(app => 
+      `<tr>
+        <td>${app.date}</td>
+        <td>${app.company}</td>
+        <td>${app.position}</td>
+        <td>${app.contractType}</td>
+        <td>${app.source}</td>
+        <td>${app.followUpDate}</td>
+        <td>${app.status}</td>
+        <td>${app.employerResponse}</td>
+        <td>${app.responseMode}</td>
+        <td>${app.reasons}</td>
+        <td>${app.interview}</td>
+        <td>${app.profiles}</td>
+        <td>${app.documentsSent}</td>
+      </tr>`
+    ).join('');
 }
 
-// Function to handle form submission
-document.getElementById('jobApplicationForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+// Handle form submission
+document.getElementById('my-form').addEventListener('submit', async function(event) {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const newApplication = {};
+  const googleSheetData = [];
 
-    const formData = new FormData(event.target);
-    const newApplication = {};
-    for (const [key, value] of formData.entries()) {
-        newApplication[key] = value;
+  for (const [key, value] of formData.entries()) {
+    if (!value.trim()) {
+      alert(`Please fill in the ${key} field.`);
+      return;
     }
+    newApplication[key] = value;
+    googleSheetData.push(value);
+  }
 
-    jobApplications.push(newApplication);
-    renderJobApplications();
-    event.target.reset(); // Reset form after submission
+  jobApplications.push(newApplication);
+  renderJobApplications();
+  try {
+    await appendDataToSheet([googleSheetData]);
+    alert('Data successfully added to Google Sheet.');
+  } catch (error) {
+    console.error('Error appending data to Google Sheet:', error);
+    alert('Failed to add data to Google Sheet.');
+  }
+
+  event.target.reset();
 });
 
-// Function to export data to Excel
-document.getElementById('exportButton').addEventListener('click', function () {
-    const worksheet = XLSX.utils.json_to_sheet(jobApplications);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Job Applications');
-    XLSX.writeFile(workbook, 'job_applications.xlsx');
-});
+// Append data to Google Sheet
+async function appendDataToSheet(data) {
+  if (!gapi.client) {
+    throw new Error('Google API client not initialized');
+  }
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    throw new Error('User not signed in');
+  }
 
-// Render job applications on document load
-document.addEventListener('DOMContentLoaded', renderJobApplications);
+  const sheetId = '';
+  const range = 'Sheet1!A1:Z';
+  const valueRangeBody = { values: data };
+  const response = await gapi.client.sheets.spreadsheets.values.append({
+    spreadsheetId: sheetId,
+    range: range,
+    valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
+    resource: valueRangeBody,
+  });
+  return response;
+}
+
+// Initialize Google API client
+function initClient() {
+  gapi.client.init({
+    apiKey: '',
+    clientId: '',
+    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+  }).then(function() {
+    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+    updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  }, function(error) {
+    console.error('Error initializing GAPI client:', error);
+  });
+}
+
+// Update UI based on sign-in status
+function updateSignInStatus(isSignedIn) {
+  if (isSignedIn) {
+    console.log('User is signed in');
+  } else {
+    console.log('User is not signed in');
+    gapi.auth2.getAuthInstance().signIn();
+  }
+}
+
+// Load the Google Sheets API client library and initialize the GAPI client
+function handleClientLoad() {
+  gapi.load('client:auth2', initClient);
+}
